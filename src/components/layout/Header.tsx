@@ -1,73 +1,67 @@
 
-import { Menu, Bell, User, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Menu, User, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   onMenuClick: () => void;
   currentPage: string;
 }
 
-const pageLabels: Record<string, string> = {
+const pageNames: Record<string, string> = {
   dashboard: "Dashboard",
   products: "Produtos",
-  sales: "Vendas", 
+  sales: "Vendas",
   reports: "Relatórios",
-  settings: "Configurações"
+  settings: "Configurações",
 };
 
 export const Header = ({ onMenuClick, currentPage }: HeaderProps) => {
+  const { user, signOut } = useAuth();
+
   return (
-    <header className="bg-white border-b border-gray-200 px-4 py-3">
-      <div className="flex items-center justify-between">
+    <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center space-x-4">
           <Button
-            variant="ghost" 
+            variant="ghost"
             size="sm"
             onClick={onMenuClick}
             className="lg:hidden"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="h-5 w-5" />
           </Button>
-          
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              {pageLabels[currentPage]}
-            </h2>
-            <p className="text-sm text-gray-500">
-              {new Date().toLocaleDateString('pt-BR', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </p>
-          </div>
+          <h1 className="text-xl font-semibold text-gray-900">
+            {pageNames[currentPage] || "StockPro"}
+          </h1>
         </div>
 
-        <div className="flex items-center space-x-4">
-          {/* Search - only on larger screens */}
-          <div className="hidden md:flex relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input 
-              placeholder="Buscar produtos, vendas..."
-              className="pl-10 w-64"
-            />
-          </div>
-
-          {/* Notifications */}
-          <Button variant="ghost" size="sm" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              3
-            </span>
-          </Button>
-
-          {/* User */}
-          <Button variant="ghost" size="sm">
-            <User className="w-5 h-5" />
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline-block">
+                {user?.email?.split('@')[0] || 'Usuário'}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sair</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

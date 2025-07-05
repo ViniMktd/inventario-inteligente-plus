@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { Dashboard } from "@/components/dashboard/Dashboard";
@@ -30,25 +31,27 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage}
-        isOpen={sidebarOpen}
-        setIsOpen={setSidebarOpen}
-      />
-      
-      <div className="lg:ml-64">
-        <Header 
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-          currentPage={currentPage}
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        <Sidebar 
+          currentPage={currentPage} 
+          setCurrentPage={setCurrentPage}
+          isOpen={sidebarOpen}
+          setIsOpen={setSidebarOpen}
         />
         
-        <main className="p-4 lg:p-6">
-          {renderCurrentPage()}
-        </main>
+        <div className="lg:ml-64">
+          <Header 
+            onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+            currentPage={currentPage}
+          />
+          
+          <main className="p-4 lg:p-6">
+            {renderCurrentPage()}
+          </main>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 
