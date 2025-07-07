@@ -2,25 +2,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 
 type Product = Tables<'products'>;
-type ProductInsert = {
-  name: string;
-  description?: string;
-  ean?: string;
-  internal_code?: string;
-  category_id?: string;
-  supplier_id?: string;
-  purchase_price?: number;
-  sale_price: number;
-  stock_quantity?: number;
-  min_stock?: number;
-  max_stock?: number;
-  unit?: string;
-  status?: 'active' | 'inactive' | 'discontinued';
-  expiry_date?: string;
-};
+type ProductInsert = TablesInsert<'products'>;
+type ProductUpdate = TablesUpdate<'products'>;
 
 export const useProducts = () => {
   const { toast } = useToast();
@@ -37,16 +23,13 @@ export const useProducts = () => {
         .from('products')
         .select(`
           *,
-          categories (name),
-          suppliers (name)
+          categories(name),
+          suppliers(name)
         `)
-        .order('created_at', { ascending: false });
+        .order('name');
       
       if (error) throw error;
-      return data as (Product & { 
-        categories: { name: string } | null;
-        suppliers: { name: string } | null;
-      })[];
+      return data as Product[];
     },
   });
 
@@ -69,6 +52,7 @@ export const useProducts = () => {
       });
     },
     onError: (error: any) => {
+      console.error('Erro ao criar produto:', error);
       toast({
         title: "Erro ao criar produto",
         description: error.message,
@@ -78,10 +62,10 @@ export const useProducts = () => {
   });
 
   const updateProduct = useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Product> & { id: string }) => {
+    mutationFn: async ({ id, ...product }: { id: string } & ProductUpdate) => {
       const { data, error } = await supabase
         .from('products')
-        .update(updates)
+        .update(product)
         .eq('id', id)
         .select()
         .single();
@@ -93,10 +77,11 @@ export const useProducts = () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({
         title: "Produto atualizado!",
-        description: "As alterações foram salvas com sucesso.",
+        description: "As informações foram atualizadas com sucesso.",
       });
     },
     onError: (error: any) => {
+      console.error('Erro ao atualizar produto:', error);
       toast({
         title: "Erro ao atualizar produto",
         description: error.message,
@@ -117,16 +102,63 @@ export const useProducts = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({
-        title: "Produto removido!",
+        title: "Produto excluído!",
         description: "O produto foi removido com sucesso.",
       });
     },
     onError: (error: any) => {
+      console.error('Erro ao excluir produto:', error);
       toast({
-        title: "Erro ao remover produto",
+        title: "Erro ao excluir produto",
         description: error.message,
         variant: "destructive",
       });
+    },
+  });
+
+  // Função para buscar produtos por EAN ou nome (útil para PDV)
+  const searchProducts = async (query: string) => {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .or(`name.ilike.%${query}%,ean.eq.${query}`)
+      .eq('status', 'active')
+      .limit(10);
+    
+    if (error) throw error;
+    return data;
+  };
+
+  // Função para atualizar estoque
+  const updateStock = useMutation({
+    mutationFn: async ({ id, quantity, operation }: { id: string; quantity: number; operation: 'add' | 'subtract' }) => {
+      // Primeiro, buscar o produto atual
+      const { data: product, error: fetchError } = await supabase
+        .from('products')
+        .select('stock_quantity')
+        .eq('id', id)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      
+      // Calcular novo estoque
+      const currentStock = product.stock_quantity || 0;
+      const newStock = operation === 'add' 
+        ? currentStock + quantity 
+        : Math.max(0, currentStock - quantity);
+      
+      // Atualizar o estoque
+      const { error } = await supabase
+        .from('products')
+        .update({ stock_quantity: newStock })
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      return newStock;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 
@@ -137,8 +169,11 @@ export const useProducts = () => {
     createProduct: createProduct.mutate,
     updateProduct: updateProduct.mutate,
     deleteProduct: deleteProduct.mutate,
+    updateStock: updateStock.mutate,
+    searchProducts,
     isCreating: createProduct.isPending,
     isUpdating: updateProduct.isPending,
     isDeleting: deleteProduct.isPending,
+    isUpdatingStock: updateStock.isPending,
   };
 };

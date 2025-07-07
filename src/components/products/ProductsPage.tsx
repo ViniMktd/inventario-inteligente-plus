@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductTable } from "./ProductTable";
 import { ProductStats } from "./ProductStats";
+import { ProductDialog } from "./ProductDialog";
 
 export const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,10 +24,7 @@ export const ProductsPage = () => {
             <Upload className="w-4 h-4" />
             <span>Importar XML</span>
           </Button>
-          <Button className="flex items-center space-x-2">
-            <Plus className="w-4 h-4" />
-            <span>Novo Produto</span>
-          </Button>
+          <ProductDialog />
         </div>
       </div>
 
