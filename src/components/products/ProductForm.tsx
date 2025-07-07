@@ -68,13 +68,22 @@ export const ProductForm = ({ product, onSuccess, onCancel }: ProductFormProps) 
 
   const onSubmit = async (data: ProductFormData) => {
     try {
+      // Ensure required fields are properly typed
       const productData = {
-        ...data,
-        expiry_date: data.expiry_date || null,
+        name: data.name, // Explicitly include required field
+        sale_price: data.sale_price, // Explicitly include required field
+        description: data.description || null,
+        ean: data.ean || null,
+        internal_code: data.internal_code || null,
         category_id: data.category_id || null,
         supplier_id: data.supplier_id || null,
         purchase_price: data.purchase_price || 0,
+        stock_quantity: data.stock_quantity || 0,
+        min_stock: data.min_stock || 0,
         max_stock: data.max_stock || null,
+        unit: data.unit || "UN",
+        status: data.status || "active",
+        expiry_date: data.expiry_date || null,
       };
 
       if (product) {
