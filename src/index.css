@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Google Fonts for better typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -39,15 +42,15 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Success colors */
+    /* Enhanced Success colors */
     --success: 142.1 76.2% 36.3%;
     --success-foreground: 355.7 100% 97.3%;
 
-    /* Warning colors */
+    /* Enhanced Warning colors */
     --warning: 32.5 94.6% 43.7%;
     --warning-foreground: 355.7 100% 97.3%;
 
-    /* Info colors */
+    /* Enhanced Info colors */
     --info: 213.1 93.9% 67.8%;
     --info-foreground: 355.7 100% 97.3%;
 
@@ -131,7 +134,18 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variant-numeric: oldstyle-nums;
+  }
+
+  /* Enhanced Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
 
   /* Smooth scrolling */
@@ -139,18 +153,20 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar with enhanced styling */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-muted/20;
+    @apply bg-muted/20 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/30 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -159,6 +175,29 @@ All colors MUST be HSL.
 }
 
 @layer components {
+  /* Premium Card Component */
+  .premium-card {
+    @apply bg-card text-card-foreground shadow-lg hover:shadow-xl 
+           border-0 rounded-2xl transition-all duration-300 ease-out
+           hover:scale-[1.02] hover:-translate-y-1 backdrop-blur-sm
+           border border-border/50;
+  }
+
+  /* Modern Input Component */
+  .modern-input {
+    @apply bg-background/50 border-2 border-border/50 rounded-xl
+           focus:border-primary/50 focus:ring-2 focus:ring-primary/20
+           transition-all duration-200 placeholder:text-muted-foreground/60
+           hover:border-border/80;
+  }
+
+  /* Modern Button Component */
+  .modern-button {
+    @apply font-medium rounded-xl transition-all duration-200 
+           hover:scale-105 hover:shadow-lg active:scale-95
+           focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
   /* Glass morphism effect */
   .glass {
     background: hsl(var(--glass-bg));
@@ -166,27 +205,17 @@ All colors MUST be HSL.
     border: 1px solid hsl(var(--glass-border));
   }
 
-  /* Enhanced button styles */
-  .btn-primary-enhanced {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 
-           shadow-lg hover:shadow-xl transform hover:scale-105 
-           transition-all duration-200 ease-out;
+  /* Enhanced Gradient backgrounds */
+  .premium-gradient-hero {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)) 0%, 
+      hsl(var(--primary) / 0.9) 25%,
+      hsl(var(--info)) 50%,
+      hsl(var(--success) / 0.8) 75%,
+      hsl(var(--warning) / 0.7) 100%
+    );
   }
 
-  .btn-secondary-enhanced {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 
-           shadow-md hover:shadow-lg transform hover:scale-105 
-           transition-all duration-200 ease-out;
-  }
-
-  /* Card enhancements */
-  .card-enhanced {
-    @apply bg-card text-card-foreground shadow-lg hover:shadow-xl 
-           border-0 rounded-xl transition-all duration-300 ease-out
-           hover:scale-[1.02] hover:-translate-y-1;
-  }
-
-  /* Gradient backgrounds */
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
   }
@@ -203,33 +232,49 @@ All colors MUST be HSL.
     background: linear-gradient(135deg, hsl(var(--info)) 0%, hsl(var(--info) / 0.8) 100%);
   }
 
-  /* Animation classes */
+  /* Enhanced Animation classes */
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: enhanced-fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .animate-slide-up {
-    animation: slideUp 0.5s ease-out;
+    animation: enhanced-slideUp 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.3s ease-out;
+    animation: enhanced-scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Hover effects */
+  /* Enhanced Hover effects */
   .hover-lift {
-    @apply transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-xl;
+    @apply transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-2xl;
   }
 
   .hover-glow {
-    @apply transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/25;
+    @apply transition-all duration-300 ease-out hover:shadow-2xl hover:shadow-primary/25;
+  }
+
+  .hover-scale-102 {
+    @apply transition-transform duration-200 hover:scale-[1.02];
   }
 }
 
-@keyframes fadeIn {
+/* Enhanced Keyframes */
+@keyframes enhanced-fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes enhanced-slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -237,21 +282,10 @@ All colors MUST be HSL.
   }
 }
 
-@keyframes slideUp {
+@keyframes enhanced-scaleIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -259,8 +293,8 @@ All colors MUST be HSL.
   }
 }
 
-/* Loading skeleton */
-@keyframes skeleton {
+/* Loading skeleton with improved animation */
+@keyframes premium-skeleton {
   0% {
     background-position: 200% 0;
   }
@@ -270,7 +304,22 @@ All colors MUST be HSL.
 }
 
 .skeleton {
-  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted-foreground) / 0.1) 50%, hsl(var(--muted)) 75%);
+  background: linear-gradient(
+    90deg, 
+    hsl(var(--muted)) 25%, 
+    hsl(var(--muted-foreground) / 0.1) 50%, 
+    hsl(var(--muted)) 75%
+  );
   background-size: 200% 100%;
-  animation: skeleton 1.5s infinite;
+  animation: premium-skeleton 1.8s infinite;
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus-visible {
+  @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+}
+
+/* Enhanced text selection */
+::selection {
+  @apply bg-primary/20 text-primary-foreground;
 }
