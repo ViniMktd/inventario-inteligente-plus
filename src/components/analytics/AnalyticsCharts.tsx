@@ -25,7 +25,7 @@ export const AnalyticsCharts = () => {
           .gte('created_at', monthStart.toISOString())
           .lte('created_at', monthEnd.toISOString());
         
-        const total = sales?.reduce((sum, sale) => sum + (sale.final_amount || 0), 0) || 0;
+        const total = sales?.reduce((sum, sale) => sum + Number(sale.final_amount || 0), 0) || 0;
         
         salesByMonth.push({
           month: monthStart.toLocaleDateString('pt-BR', { month: 'short' }),
@@ -42,20 +42,20 @@ export const AnalyticsCharts = () => {
           products(name)
         `);
 
-      const productSales = {};
+      const productSales: Record<string, number> = {};
       topProductsData?.forEach(item => {
         const productName = item.products?.name || 'Produto sem nome';
         if (productSales[productName]) {
-          productSales[productName] += item.quantity;
+          productSales[productName] += Number(item.quantity || 0);
         } else {
-          productSales[productName] = item.quantity;
+          productSales[productName] = Number(item.quantity || 0);
         }
       });
 
       const topProducts = Object.entries(productSales)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([,a], [,b]) => Number(b) - Number(a))
         .slice(0, 5)
-        .map(([name, quantity]) => ({ name, quantity }));
+        .map(([name, quantity]) => ({ name, quantity: Number(quantity) }));
 
       // Categorias mais vendidas
       const { data: categorySales } = await supabase
@@ -65,20 +65,20 @@ export const AnalyticsCharts = () => {
           products(category_id, categories(name))
         `);
 
-      const categoryData = {};
+      const categoryData: Record<string, number> = {};
       categorySales?.forEach(item => {
         const categoryName = item.products?.categories?.name || 'Sem categoria';
         if (categoryData[categoryName]) {
-          categoryData[categoryName] += item.quantity;
+          categoryData[categoryName] += Number(item.quantity || 0);
         } else {
-          categoryData[categoryName] = item.quantity;
+          categoryData[categoryName] = Number(item.quantity || 0);
         }
       });
 
       const topCategories = Object.entries(categoryData)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([,a], [,b]) => Number(b) - Number(a))
         .slice(0, 5)
-        .map(([name, value]) => ({ name, value }));
+        .map(([name, value]) => ({ name, value: Number(value) }));
 
       return {
         salesByMonth,
@@ -118,7 +118,7 @@ export const AnalyticsCharts = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip formatter={(value) => [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Vendas']} />
+              <Tooltip formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Vendas']} />
               <Line type="monotone" dataKey="value" stroke="#0088FE" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
@@ -156,7 +156,7 @@ export const AnalyticsCharts = () => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name} ${(Number(percent) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
