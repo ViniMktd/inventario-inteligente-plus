@@ -1,41 +1,50 @@
+
 import { Plus, Upload, ShoppingCart, FileText, Package, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-const actions = [{
-  title: "Nova Venda",
-  description: "Iniciar PDV",
-  icon: ShoppingCart,
-  color: "text-white",
-  bgGradient: "gradient-success",
-  shortcut: "F2",
-  priority: "high"
-}, {
-  title: "Cadastrar Produto",
-  description: "Adicionar novo item",
-  icon: Plus,
-  color: "text-white",
-  bgGradient: "gradient-info",
-  shortcut: "F3",
-  priority: "high"
-}, {
-  title: "Importar XML",
-  description: "Upload de NF-e",
-  icon: Upload,
-  color: "text-white",
-  bgGradient: "gradient-warning",
-  shortcut: "F4",
-  priority: "medium"
-}, {
-  title: "Relatórios",
-  description: "Análises e insights",
-  icon: FileText,
-  color: "text-white",
-  bgGradient: "gradient-primary",
-  shortcut: "F5",
-  priority: "medium"
-}];
+
+const actions = [
+  {
+    title: "Nova Venda",
+    description: "Iniciar PDV",
+    icon: ShoppingCart,
+    color: "text-white",
+    bgGradient: "gradient-success",
+    shortcut: "F2",
+    priority: "high"
+  },
+  {
+    title: "Cadastrar Produto", 
+    description: "Adicionar novo item",
+    icon: Plus,
+    color: "text-white",
+    bgGradient: "gradient-info",
+    shortcut: "F3",
+    priority: "high"
+  },
+  {
+    title: "Importar XML",
+    description: "Upload de NF-e",
+    icon: Upload,
+    color: "text-white",
+    bgGradient: "gradient-warning",
+    shortcut: "F4",
+    priority: "medium"
+  },
+  {
+    title: "Relatórios",
+    description: "Análises e insights",
+    icon: FileText,
+    color: "text-white",
+    bgGradient: "gradient-primary",
+    shortcut: "F5",
+    priority: "medium"
+  }
+];
+
 export const QuickActions = () => {
-  return <Card className="card-enhanced">
+  return (
+    <Card className="card-enhanced">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -55,11 +64,19 @@ export const QuickActions = () => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {actions.map((action, index) => {
-          const Icon = action.icon;
-          return <Button key={index} variant="ghost" className="h-auto p-0 flex flex-col hover:bg-transparent group relative overflow-hidden">
+            const Icon = action.icon;
+            
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                className="h-auto p-0 flex flex-col hover:bg-transparent group relative overflow-hidden"
+              >
                 <div className="w-full p-6 rounded-xl border-2 border-border hover:border-primary/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg bg-card group-hover:bg-gradient-to-br group-hover:from-card group-hover:to-muted/20">
                   {/* Priority indicator */}
-                  {action.priority === "high" && <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-success animate-pulse" />}
+                  {action.priority === "high" && (
+                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-success animate-pulse" />
+                  )}
                   
                   {/* Icon */}
                   <div className={`w-16 h-16 rounded-2xl ${action.bgGradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
@@ -68,7 +85,7 @@ export const QuickActions = () => {
                   
                   {/* Content */}
                   <div className="text-center space-y-2">
-                    <div className="font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mx-0 px-[30px]">
+                    <div className="font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
                       {action.title}
                     </div>
                     <div className="text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-200">
@@ -81,8 +98,9 @@ export const QuickActions = () => {
                     {action.shortcut}
                   </div>
                 </div>
-              </Button>;
-        })}
+              </Button>
+            );
+          })}
         </div>
         
         {/* Help text */}
@@ -92,5 +110,6 @@ export const QuickActions = () => {
           </p>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
